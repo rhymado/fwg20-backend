@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 
-import router from "./src/routes";
-
 // load env ke project
 dotenv.config();
+
+import router from "./src/routes";
+
 // buat aplikasi express
 const app = express();
 

@@ -1,11 +1,11 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+
+import { getSiswa } from "../handlers/siswa";
 
 const siswaRouter = Router();
 
 // CRUD
 // /siswa
-siswaRouter.get("/", (req: Request, res: Response) => {
-  res.send("SISWA");
-});
+siswaRouter.get("/", getSiswa);
 
 export default siswaRouter;
