@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 
+import router from "./src/routes";
+
 // load env ke project
 dotenv.config();
 // buat aplikasi express
@@ -18,6 +20,9 @@ app.get("/", (req: Request, res: Response) => {
   res.send("OK");
 });
 // http://localhost:8000/
+
+// pasang router ke app
+app.use(router);
 
 // pasangkan port ke express
 // port bisa dideklarasikan atau mendapatkan nilai dari environment
