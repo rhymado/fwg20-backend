@@ -8,6 +8,9 @@ import router from "./src/routes";
 
 // buat aplikasi express
 const app = express();
+// pasang parser untuk JSON dan form encode
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // buat handler untuk rute api
 // app.METHOD
