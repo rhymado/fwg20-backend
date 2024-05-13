@@ -1,0 +1,16 @@
+
+
+1. buat project node => npm init
+2. setup git directory => git init
+3. instalasi package
+3.1 express           => npm i express
+3.2 pg                => npm i pg
+3.3 dotenv            => npm i dotenv
+3.4 typescript (dev)  => npm i -D typescript
+3.5 nodemon (dev)     => npm i -D nodemon
+3.6 ts-node (dev)     => npm i -D ts-node
+4. buat file .gitignore di root folder project
+5. buat tsconfig.json => npx tsc --init
+6. install eslint     => npm init @eslint/config@latest
+7. buat eslint config => eslint.config.js
+8. buat file index.ts

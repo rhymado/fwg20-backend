@@ -1,0 +1,27 @@
+{
+  "name": "fwg20-backend",
+  "version": "1.0.0",
+  "description": "Backend for FWG 20",
+  "main": "index.ts",
+  "scripts": {
+    "build": "",
+    "start": "",
+    "dev": ""
+  },
+  "keywords": [],
+  "author": "Fazztrack",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "globals": "^15.2.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0"
+  }
+}
