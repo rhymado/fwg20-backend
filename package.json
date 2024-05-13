@@ -4,9 +4,9 @@
   "description": "Backend for FWG 20",
   "main": "index.ts",
   "scripts": {
-    "build": "",
-    "start": "",
-    "dev": ""
+    "build": "tsc --build",
+    "start": "node ./dist/index.js",
+    "dev": "nodemon index.ts"
   },
   "keywords": [],
   "author": "Fazztrack",
@@ -17,6 +17,7 @@
     "pg": "^8.11.5"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "eslint": "^8.57.0",
     "globals": "^15.2.0",
     "nodemon": "^3.1.0",

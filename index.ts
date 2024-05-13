@@ -1,0 +1,27 @@
+import express, { Request, Response } from "express";
+import * as dotenv from "dotenv";
+
+// load env ke project
+dotenv.config();
+// buat aplikasi express
+const app = express();
+
+// buat handler untuk rute api
+// app.METHOD
+// url
+// protocol://host:port/endpoint
+// handler/middleware
+// fungsi yg memiliki 3 parameter, request, response, next
+// 1. fungsi anonim
+// 2. fungsi bernama => dianjurkan untuk memudahkan testing
+app.get("/", (req: Request, res: Response) => {
+  res.send("OK");
+});
+// http://localhost:8000/
+
+// pasangkan port ke express
+// port bisa dideklarasikan atau mendapatkan nilai dari environment
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
+});
