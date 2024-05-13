@@ -12,5 +12,5 @@
 4. buat file .gitignore di root folder project
 5. buat tsconfig.json => npx tsc --init
 6. install eslint     => npm init @eslint/config@latest
-7. buat eslint config => eslint.config.js
+7. buat eslint config => eslint.config.js di root folder project
 8. buat file index.ts
