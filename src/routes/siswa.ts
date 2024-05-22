@@ -1,6 +1,12 @@
 import { Router } from "express";
 
-import { getSiswa, getDetailSiswa, createNewSiswa } from "../handlers/siswa";
+import {
+  getSiswa,
+  getDetailSiswa,
+  createNewSiswa,
+  registerNewSiswa,
+  loginSiswa,
+} from "../handlers/siswa";
 
 const siswaRouter = Router();
 
@@ -14,5 +20,9 @@ siswaRouter.get("/", getSiswa);
 siswaRouter.get("/:nis", getDetailSiswa);
 // Menambah Siswa Baru
 siswaRouter.post("/", createNewSiswa);
+// Register Akun Siswa
+siswaRouter.post("/new", registerNewSiswa);
+// Login Akun Siswa
+siswaRouter.post("/account", loginSiswa);
 
 export default siswaRouter;

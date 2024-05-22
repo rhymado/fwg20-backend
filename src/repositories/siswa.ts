@@ -30,3 +30,21 @@ export const createSiswa = (body: IsiswaBody): Promise<QueryResult<IdataSiswa>> 
   const values = [name, age, address];
   return db.query(query, values);
 };
+
+export const registerSiswa = (
+  body: IsiswaBody,
+  hashedPassword: string
+): Promise<QueryResult<IdataSiswa>> => {
+  const query = `insert into siswa (name, age, address, pwd)
+  values ($1,$2,$3,$4)
+  returning nis, name, age, address`;
+  const { name, age, address } = body;
+  const values = [name, age, address, hashedPassword];
+  return db.query(query, values);
+};
+
+export const getPwdSiswa = (nis: string): Promise<QueryResult<{ name: string; pwd: string }>> => {
+  const query = `select name, pwd from siswa where nis = $1`;
+  const values = [nis];
+  return db.query(query, values);
+};

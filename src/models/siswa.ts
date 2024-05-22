@@ -13,10 +13,18 @@ export interface IsiswaBody {
 }
 
 export interface IdataSiswa extends IsiswaBody {
-  id: number;
   nis: string;
-  created_at: string;
-  updated_at: string | null;
+  created_at?: string;
+  updated_at?: string | null;
+}
+
+export interface IsiswaRegisterBody extends IsiswaBody {
+  pwd: string;
+}
+
+export interface IsiswaLoginBody {
+  nis: string;
+  pwd: string;
 }
 
 // export const columnName = {
