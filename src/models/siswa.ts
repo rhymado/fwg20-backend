@@ -18,3 +18,8 @@ export interface IdataSiswa extends IsiswaBody {
   created_at: string;
   updated_at: string | null;
 }
+
+// export const columnName = {
+//   siswaName: "siswa_name",
+//   alamatDomisili: "alamat_domisili",
+// };
