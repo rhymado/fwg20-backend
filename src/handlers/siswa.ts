@@ -1,5 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
 import bcrypt from "bcrypt";
+import jwt, { SignOptions } from "jsonwebtoken";
 
 import {
   getAllSiswa,
@@ -9,14 +10,20 @@ import {
   getPwdSiswa,
 } from "../repositories/siswa";
 import {
-  IsiswaBody,
-  IsiswaLoginBody,
-  IsiswaParams,
-  IsiswaQuery,
-  IsiswaRegisterBody,
+  ISiswaBody,
+  ISiswaLoginBody,
+  ISiswaParams,
+  ISiswaQuery,
+  ISiswaRegisterBody,
 } from "../models/siswa";
+import { IAuthResponse, ISiswaResponse } from "../models/response";
+import { IPayload } from "../models/payload";
+import { jwtOptions } from "../middlewares/authorization";
 
-export const getSiswa = async (req: Request<{}, {}, {}, IsiswaQuery>, res: Response) => {
+export const getSiswa = async (
+  req: Request<{}, {}, {}, ISiswaQuery>,
+  res: Response<ISiswaResponse>
+) => {
   try {
     const { name } = req.query;
     const result = await getAllSiswa(name);
@@ -41,10 +48,11 @@ export const getSiswa = async (req: Request<{}, {}, {}, IsiswaQuery>, res: Respo
   }
 };
 
-export const getDetailSiswa = async (req: Request<IsiswaParams>, res: Response) => {
-  const { nis } = req.params;
+export const getDetailSiswa = async (req: Request, res: Response<ISiswaResponse>) => {
+  // const { nis } = req.params;
+  const { nis } = req.userPayload as IPayload;
   try {
-    const result = await getOneSiswa(nis);
+    const result = await getOneSiswa(nis as string);
     // error handling ketika data kosong
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -53,7 +61,7 @@ export const getDetailSiswa = async (req: Request<IsiswaParams>, res: Response) 
       });
     }
     return res.status(200).json({
-      msg: "Succes",
+      msg: "Success",
       data: result.rows,
     });
   } catch (err) {
@@ -67,11 +75,14 @@ export const getDetailSiswa = async (req: Request<IsiswaParams>, res: Response) 
   }
 };
 
-export const createNewSiswa = async (req: Request<{}, {}, IsiswaBody>, res: Response) => {
+export const createNewSiswa = async (
+  req: Request<{}, {}, ISiswaBody>,
+  res: Response<ISiswaResponse>
+) => {
   try {
     const result = await createSiswa(req.body);
     return res.status(201).json({
-      message: "success",
+      msg: "success",
       data: result.rows,
     });
   } catch (err) {
@@ -86,8 +97,8 @@ export const createNewSiswa = async (req: Request<{}, {}, IsiswaBody>, res: Resp
 };
 
 export const registerNewSiswa = async (
-  req: Request<{}, {}, IsiswaRegisterBody>,
-  res: Response<{ msg: string; data?: any[]; err?: string }>
+  req: Request<{}, {}, ISiswaRegisterBody>,
+  res: Response<ISiswaResponse>
 ) => {
   const { pwd } = req.body;
   try {
@@ -111,9 +122,10 @@ export const registerNewSiswa = async (
   }
 };
 
+// Authentication
 export const loginSiswa = async (
-  req: Request<{}, {}, IsiswaLoginBody>,
-  res: Response<{ msg: string; data?: any[]; err?: string }>
+  req: Request<{}, {}, ISiswaLoginBody>,
+  res: Response<IAuthResponse>
 ) => {
   const { nis, pwd } = req.body;
   try {
@@ -126,8 +138,14 @@ export const loginSiswa = async (
     const isPwdValid = await bcrypt.compare(pwd, hash);
     // handling jika password salah
     if (!isPwdValid) throw new Error("Login gagal");
+    // jika pwd benar, buatkan token
+    const payload: IPayload = {
+      nis, // nis: nis
+    };
+    const token = jwt.sign(payload, <string>process.env.JWT_SECRET, jwtOptions);
     return res.status(200).json({
       msg: `Selamat datang, ${name}!`,
+      data: [{ token }],
     });
   } catch (error) {
     if (error instanceof Error) {

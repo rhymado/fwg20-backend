@@ -1,28 +1,28 @@
-export interface IsiswaParams {
+export interface ISiswaParams {
   nis: string;
 }
 
-export interface IsiswaQuery {
+export interface ISiswaQuery {
   name?: string;
 }
 
-export interface IsiswaBody {
+export interface ISiswaBody {
   name: string;
   age: number;
   address: string;
 }
 
-export interface IdataSiswa extends IsiswaBody {
+export interface IDataSiswa extends ISiswaBody {
   nis: string;
   created_at?: string;
   updated_at?: string | null;
 }
 
-export interface IsiswaRegisterBody extends IsiswaBody {
+export interface ISiswaRegisterBody extends ISiswaBody {
   pwd: string;
 }
 
-export interface IsiswaLoginBody {
+export interface ISiswaLoginBody {
   nis: string;
   pwd: string;
 }

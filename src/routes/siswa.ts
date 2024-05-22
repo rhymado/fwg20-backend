@@ -7,6 +7,7 @@ import {
   registerNewSiswa,
   loginSiswa,
 } from "../handlers/siswa";
+import { authorization } from "../middlewares/authorization";
 
 const siswaRouter = Router();
 
@@ -17,7 +18,7 @@ const siswaRouter = Router();
 siswaRouter.get("/", getSiswa);
 // memanfaatkan route params untuk data dinamis di url
 // /siswa/:nis
-siswaRouter.get("/:nis", getDetailSiswa);
+siswaRouter.get("/:nis", authorization(), getDetailSiswa);
 // Menambah Siswa Baru
 siswaRouter.post("/", createNewSiswa);
 // Register Akun Siswa

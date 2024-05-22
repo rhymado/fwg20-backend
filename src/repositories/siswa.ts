@@ -1,9 +1,9 @@
 import { QueryResult } from "pg";
 
 import db from "../configs/pg";
-import { IdataSiswa, IsiswaBody } from "../models/siswa";
+import { IDataSiswa, ISiswaBody } from "../models/siswa";
 
-export const getAllSiswa = (name?: string): Promise<QueryResult<IdataSiswa>> => {
+export const getAllSiswa = (name?: string): Promise<QueryResult<IDataSiswa>> => {
   let query = `select * from siswa`;
   const values = [];
   if (name) {
@@ -13,16 +13,16 @@ export const getAllSiswa = (name?: string): Promise<QueryResult<IdataSiswa>> => 
   return db.query(query, values);
 };
 
-export const getOneSiswa = (nis: string): Promise<QueryResult<IdataSiswa>> => {
+export const getOneSiswa = (nis: string): Promise<QueryResult<IDataSiswa>> => {
   // 1. literals => resiko SQL injection
   // "" OR 1=1
   // 2. parameterized query
-  const query = `select * from siswa where nis=$1`;
+  const query = `select nis, name, age, address, created_at, updated_at from siswa where nis=$1`;
   const values = [nis];
   return db.query(query, values);
 };
 
-export const createSiswa = (body: IsiswaBody): Promise<QueryResult<IdataSiswa>> => {
+export const createSiswa = (body: ISiswaBody): Promise<QueryResult<IDataSiswa>> => {
   const query = `insert into siswa (name, age, address)
   values ($1,$2,$3)
   returning *`;
@@ -32,9 +32,9 @@ export const createSiswa = (body: IsiswaBody): Promise<QueryResult<IdataSiswa>> 
 };
 
 export const registerSiswa = (
-  body: IsiswaBody,
+  body: ISiswaBody,
   hashedPassword: string
-): Promise<QueryResult<IdataSiswa>> => {
+): Promise<QueryResult<IDataSiswa>> => {
   const query = `insert into siswa (name, age, address, pwd)
   values ($1,$2,$3,$4)
   returning nis, name, age, address`;
