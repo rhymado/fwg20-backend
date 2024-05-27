@@ -18,6 +18,7 @@ export interface IDataSiswa extends ISiswaBody {
   nis: string;
   created_at?: string;
   updated_at?: string | null;
+  img?: string | null;
 }
 
 export interface ISiswaRegisterBody extends ISiswaBody {

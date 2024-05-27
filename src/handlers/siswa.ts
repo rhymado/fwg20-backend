@@ -10,6 +10,7 @@ import {
   getPwdSiswa,
   setPwdSiswa,
   getTotalSiswa,
+  setImageSiswa,
 } from "../repositories/siswa";
 import { ISiswaBody, ISiswaLoginBody, ISiswaQuery, ISiswaRegisterBody } from "../models/siswa";
 import { IAuthResponse, ISiswaResponse } from "../models/response";
@@ -17,10 +18,7 @@ import { IPayload } from "../models/payload";
 import { jwtOptions } from "../middlewares/authorization";
 import getLink from "../helpers/getLink";
 
-export const getSiswa = async (
-  req: Request<{}, {}, {}, ISiswaQuery>,
-  res: Response<ISiswaResponse>
-) => {
+export const getSiswa = async (req: Request<{}, {}, {}, ISiswaQuery>, res: Response<ISiswaResponse>) => {
   try {
     const result = await getAllSiswa(req.query);
     if (result.rows.length === 0) {
@@ -83,10 +81,7 @@ export const getDetailSiswa = async (req: Request, res: Response<ISiswaResponse>
   }
 };
 
-export const createNewSiswa = async (
-  req: Request<{}, {}, ISiswaBody>,
-  res: Response<ISiswaResponse>
-) => {
+export const createNewSiswa = async (req: Request<{}, {}, ISiswaBody>, res: Response<ISiswaResponse>) => {
   try {
     const result = await createSiswa(req.body);
     return res.status(201).json({
@@ -104,10 +99,7 @@ export const createNewSiswa = async (
   }
 };
 
-export const registerNewSiswa = async (
-  req: Request<{}, {}, ISiswaRegisterBody>,
-  res: Response<ISiswaResponse>
-) => {
+export const registerNewSiswa = async (req: Request<{}, {}, ISiswaRegisterBody>, res: Response<ISiswaResponse>) => {
   const { pwd } = req.body;
   try {
     // membuat hashed password
@@ -131,10 +123,7 @@ export const registerNewSiswa = async (
 };
 
 // Authentication
-export const loginSiswa = async (
-  req: Request<{}, {}, ISiswaLoginBody>,
-  res: Response<IAuthResponse>
-) => {
+export const loginSiswa = async (req: Request<{}, {}, ISiswaLoginBody>, res: Response<IAuthResponse>) => {
   const { nis, pwd } = req.body;
   try {
     // siswa login menggunakan nis
@@ -175,11 +164,8 @@ export const loginSiswa = async (
   }
 };
 
-// Tambah password ke siswa yg belum ada password
-export const setPwd = async (
-  req: Request<{ nis: string }, {}, { pwd: string }>,
-  res: Response<ISiswaResponse>
-) => {
+// Tambah/Edit password ke siswa
+export const setPwd = async (req: Request<{ nis: string }, {}, { pwd: string }>, res: Response<ISiswaResponse>) => {
   const { pwd } = req.body;
   const { nis } = req.params;
   try {
@@ -188,6 +174,40 @@ export const setPwd = async (
     await setPwdSiswa(hashed, nis);
     res.status(200).json({
       msg: "Berhasil diubah",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      if (/(invalid(.)+uuid(.)+)/g.test(error.message)) {
+        return res.status(401).json({
+          msg: "Error",
+          err: "Siswa tidak ditemukan",
+        });
+      }
+      console.log(error.message);
+    }
+    return res.status(500).json({
+      msg: "Error",
+      err: "Internal Server Error",
+    });
+  }
+};
+
+// Tambah/Edit gambar siswa
+export const setImage = async (req: Request<{ nis: string }>, res: Response<ISiswaResponse>) => {
+  const {
+    file,
+    params: { nis },
+  } = req;
+  if (!file)
+    return res.status(400).json({
+      msg: "File not found",
+      err: "Only receive input for image files (JPG, PNG, JPEG)",
+    });
+  try {
+    const result = await setImageSiswa(nis, file.filename);
+    return res.status(200).json({
+      msg: "Gambar berhasil ditambahkan",
+      data: result.rows,
     });
   } catch (error) {
     if (error instanceof Error) {

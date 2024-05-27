@@ -27,6 +27,9 @@ const configs: CorsOptions = {
 };
 app.use(cors(configs));
 
+// untuk mengakses static file
+app.use(express.static("./public"));
+
 // buat handler untuk rute api
 // app.METHOD
 // url

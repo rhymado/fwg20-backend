@@ -7,8 +7,10 @@ import {
   registerNewSiswa,
   loginSiswa,
   setPwd,
+  setImage,
 } from "../handlers/siswa";
 import { authorization } from "../middlewares/authorization";
+import { singleUploader } from "../middlewares/upload";
 
 const siswaRouter = Router();
 
@@ -28,5 +30,7 @@ siswaRouter.post("/new", registerNewSiswa);
 siswaRouter.post("/account", loginSiswa);
 // Edit Pwd Siswa
 siswaRouter.patch("/:nis/pwd", setPwd);
+// Edit Image Siswa
+siswaRouter.patch("/:nis/profile", singleUploader("profile"), setImage);
 
 export default siswaRouter;

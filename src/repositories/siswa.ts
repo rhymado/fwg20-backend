@@ -68,3 +68,12 @@ export const getTotalSiswa = ({ name }: ISiswaQuery): Promise<QueryResult<{ tota
   }
   return db.query(query, values);
 };
+
+export const setImageSiswa = (nis: string, imgUrl?: string): Promise<QueryResult<IDataSiswa>> => {
+  const query = `update siswa set image=$1 where nis=$2 returning nis, image`;
+  const values: (string | null)[] = [];
+  if (imgUrl) values.push(`/imgs/${imgUrl}`);
+  if (!imgUrl) values.push(null);
+  values.push(nis);
+  return db.query(query, values);
+};
