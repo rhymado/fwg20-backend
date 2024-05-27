@@ -7,6 +7,7 @@ import cors, { CorsOptions } from "cors";
 dotenv.config();
 
 import router from "./src/routes";
+import getLink from "./src/helpers/getLink";
 
 // buat aplikasi express
 const app = express();
@@ -34,8 +35,11 @@ app.use(cors(configs));
 // fungsi yg memiliki 3 parameter, request, response, next
 // 1. fungsi anonim
 // 2. fungsi bernama => dianjurkan untuk memudahkan testing
-app.get("/", (req: Request, res: Response) => {
-  res.send("OK");
+app.get("/test/base/url/:a", (req: Request, res: Response) => {
+  res.json({
+    link: getLink(req, "previous"),
+    path: req.path,
+  });
 });
 // http://localhost:8000/
 

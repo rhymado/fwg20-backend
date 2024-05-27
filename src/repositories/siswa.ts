@@ -1,14 +1,21 @@
 import { QueryResult } from "pg";
 
 import db from "../configs/pg";
-import { IDataSiswa, ISiswaBody } from "../models/siswa";
+import { IDataSiswa, ISiswaBody, ISiswaQuery } from "../models/siswa";
 
-export const getAllSiswa = (name?: string): Promise<QueryResult<IDataSiswa>> => {
-  let query = `select * from siswa order by id asc`;
+export const getAllSiswa = ({ name, page, limit }: ISiswaQuery): Promise<QueryResult<IDataSiswa>> => {
+  let query = `select * from siswa`;
   const values = [];
   if (name) {
     query += " where name ilike $1";
     values.push(`%${name}%`);
+  }
+  query += " order by id asc";
+  if (page && limit) {
+    const pageLimit = parseInt(limit);
+    const offset = (parseInt(page) - 1) * pageLimit;
+    query += ` limit $${values.length + 1} offset $${values.length + 2}`;
+    values.push(pageLimit, offset);
   }
   return db.query(query, values);
 };
@@ -31,10 +38,7 @@ export const createSiswa = (body: ISiswaBody): Promise<QueryResult<IDataSiswa>> 
   return db.query(query, values);
 };
 
-export const registerSiswa = (
-  body: ISiswaBody,
-  hashedPassword: string
-): Promise<QueryResult<IDataSiswa>> => {
+export const registerSiswa = (body: ISiswaBody, hashedPassword: string): Promise<QueryResult<IDataSiswa>> => {
   const query = `insert into siswa (name, age, address, pwd)
   values ($1,$2,$3,$4)
   returning nis, name, age, address`;
@@ -52,5 +56,15 @@ export const getPwdSiswa = (nis: string): Promise<QueryResult<{ name: string; pw
 export const setPwdSiswa = (hashedPwd: string, nis: string): Promise<QueryResult<{}>> => {
   const query = `update siswa set pwd=$1, updated_at=now() where nis=$2`;
   const values = [hashedPwd, nis];
+  return db.query(query, values);
+};
+
+export const getTotalSiswa = ({ name }: ISiswaQuery): Promise<QueryResult<{ total_siswa: string }>> => {
+  let query = 'select count(*) as "total_siswa" from siswa';
+  const values = [];
+  if (name) {
+    query += " where name ilike $1";
+    values.push(`%${name}%`);
+  }
   return db.query(query, values);
 };

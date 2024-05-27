@@ -1,5 +1,5 @@
 import { Request, Response } from "express-serve-static-core";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import {
@@ -9,28 +9,41 @@ import {
   registerSiswa,
   getPwdSiswa,
   setPwdSiswa,
+  getTotalSiswa,
 } from "../repositories/siswa";
 import { ISiswaBody, ISiswaLoginBody, ISiswaQuery, ISiswaRegisterBody } from "../models/siswa";
 import { IAuthResponse, ISiswaResponse } from "../models/response";
 import { IPayload } from "../models/payload";
 import { jwtOptions } from "../middlewares/authorization";
+import getLink from "../helpers/getLink";
 
 export const getSiswa = async (
   req: Request<{}, {}, {}, ISiswaQuery>,
   res: Response<ISiswaResponse>
 ) => {
   try {
-    const { name } = req.query;
-    const result = await getAllSiswa(name);
+    const result = await getAllSiswa(req.query);
     if (result.rows.length === 0) {
       return res.status(404).json({
         msg: "Siswa tidak ditemukan",
         data: [],
       });
     }
+    const dataSiswa = await getTotalSiswa(req.query);
+    const page = parseInt((req.query.page as string) || "1");
+    const totalData = parseInt(dataSiswa.rows[0].total_siswa);
+    const totalPage = Math.ceil(totalData / parseInt(req.query.limit as string));
+    console.log(req.baseUrl);
     return res.status(200).json({
       msg: "Success",
       data: result.rows,
+      meta: {
+        totalData,
+        totalPage,
+        page,
+        prevLink: page > 1 ? getLink(req, "previous") : null,
+        nextLink: page != totalPage ? getLink(req, "next") : null,
+      },
     });
   } catch (err: unknown) {
     if (err instanceof Error) {

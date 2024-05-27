@@ -4,6 +4,8 @@ export interface ISiswaParams {
 
 export interface ISiswaQuery {
   name?: string;
+  page?: string;
+  limit?: string;
 }
 
 export interface ISiswaBody {
