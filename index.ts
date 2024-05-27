@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
+import morgan from "morgan";
 
 // load env ke project
 dotenv.config();
@@ -11,6 +12,10 @@ const app = express();
 // pasang parser untuk JSON dan form encode
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// logger
+const logger = morgan("dev");
+app.use(logger);
 
 // buat handler untuk rute api
 // app.METHOD
