@@ -4,7 +4,7 @@ import db from "../configs/pg";
 import { IDataSiswa, ISiswaBody } from "../models/siswa";
 
 export const getAllSiswa = (name?: string): Promise<QueryResult<IDataSiswa>> => {
-  let query = `select * from siswa`;
+  let query = `select * from siswa order by id asc`;
   const values = [];
   if (name) {
     query += " where name ilike $1";
@@ -46,5 +46,11 @@ export const registerSiswa = (
 export const getPwdSiswa = (nis: string): Promise<QueryResult<{ name: string; pwd: string }>> => {
   const query = `select name, pwd from siswa where nis = $1`;
   const values = [nis];
+  return db.query(query, values);
+};
+
+export const setPwdSiswa = (hashedPwd: string, nis: string): Promise<QueryResult<{}>> => {
+  const query = `update siswa set pwd=$1, updated_at=now() where nis=$2`;
+  const values = [hashedPwd, nis];
   return db.query(query, values);
 };

@@ -6,6 +6,7 @@ import {
   createNewSiswa,
   registerNewSiswa,
   loginSiswa,
+  setPwd,
 } from "../handlers/siswa";
 import { authorization } from "../middlewares/authorization";
 
@@ -25,5 +26,7 @@ siswaRouter.post("/", createNewSiswa);
 siswaRouter.post("/new", registerNewSiswa);
 // Login Akun Siswa
 siswaRouter.post("/account", loginSiswa);
+// Edit Pwd Siswa
+siswaRouter.patch("/:nis/pwd", setPwd);
 
 export default siswaRouter;

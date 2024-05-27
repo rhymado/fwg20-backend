@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 import morgan from "morgan";
+import cors, { CorsOptions } from "cors";
 
 // load env ke project
 dotenv.config();
@@ -16,6 +17,14 @@ app.use(express.urlencoded({ extended: false }));
 // logger
 const logger = morgan("dev");
 app.use(logger);
+
+// cors
+const configs: CorsOptions = {
+  origin: ["http://localhost:8080", "http://127.0.0.1:5500"],
+  methods: ["POST", "PATCH"],
+  allowedHeaders: ["Authorization", "x-headers"],
+};
+app.use(cors(configs));
 
 // buat handler untuk rute api
 // app.METHOD

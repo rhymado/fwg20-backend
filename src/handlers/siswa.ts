@@ -1,6 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
-import bcrypt from "bcrypt";
-import jwt, { SignOptions } from "jsonwebtoken";
+import bcrypt, { hash } from "bcrypt";
+import jwt from "jsonwebtoken";
 
 import {
   getAllSiswa,
@@ -8,14 +8,9 @@ import {
   createSiswa,
   registerSiswa,
   getPwdSiswa,
+  setPwdSiswa,
 } from "../repositories/siswa";
-import {
-  ISiswaBody,
-  ISiswaLoginBody,
-  ISiswaParams,
-  ISiswaQuery,
-  ISiswaRegisterBody,
-} from "../models/siswa";
+import { ISiswaBody, ISiswaLoginBody, ISiswaQuery, ISiswaRegisterBody } from "../models/siswa";
 import { IAuthResponse, ISiswaResponse } from "../models/response";
 import { IPayload } from "../models/payload";
 import { jwtOptions } from "../middlewares/authorization";
@@ -34,7 +29,7 @@ export const getSiswa = async (
       });
     }
     return res.status(200).json({
-      msg: "Succes",
+      msg: "Success",
       data: result.rows,
     });
   } catch (err: unknown) {
@@ -159,6 +154,37 @@ export const loginSiswa = async (
         msg: "Error",
         err: error.message,
       });
+    }
+    return res.status(500).json({
+      msg: "Error",
+      err: "Internal Server Error",
+    });
+  }
+};
+
+// Tambah password ke siswa yg belum ada password
+export const setPwd = async (
+  req: Request<{ nis: string }, {}, { pwd: string }>,
+  res: Response<ISiswaResponse>
+) => {
+  const { pwd } = req.body;
+  const { nis } = req.params;
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashed = await bcrypt.hash(pwd, salt);
+    await setPwdSiswa(hashed, nis);
+    res.status(200).json({
+      msg: "Berhasil diubah",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      if (/(invalid(.)+uuid(.)+)/g.test(error.message)) {
+        return res.status(401).json({
+          msg: "Error",
+          err: "Siswa tidak ditemukan",
+        });
+      }
+      console.log(error.message);
     }
     return res.status(500).json({
       msg: "Error",
