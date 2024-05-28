@@ -1,4 +1,4 @@
-import { QueryResult } from "pg";
+import { Pool, PoolClient, QueryResult } from "pg";
 
 import db from "../configs/pg";
 import { IDataSiswa, ISiswaBody, ISiswaQuery } from "../models/siswa";
@@ -38,13 +38,17 @@ export const createSiswa = (body: ISiswaBody): Promise<QueryResult<IDataSiswa>> 
   return db.query(query, values);
 };
 
-export const registerSiswa = (body: ISiswaBody, hashedPassword: string): Promise<QueryResult<IDataSiswa>> => {
+export const registerSiswa = (
+  body: ISiswaBody,
+  hashedPassword: string,
+  pgConn: Pool | PoolClient
+): Promise<QueryResult<IDataSiswa>> => {
   const query = `insert into siswa (name, age, address, pwd)
   values ($1,$2,$3,$4)
-  returning nis, name, age, address`;
+  returning id, nis, name, age, address`;
   const { name, age, address } = body;
   const values = [name, age, address, hashedPassword];
-  return db.query(query, values);
+  return pgConn.query(query, values);
 };
 
 export const getPwdSiswa = (nis: string): Promise<QueryResult<{ name: string; pwd: string }>> => {

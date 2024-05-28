@@ -8,6 +8,7 @@ import {
   loginSiswa,
   setPwd,
   setImage,
+  addNewSiswaWithCourse,
 } from "../handlers/siswa";
 import { authorization } from "../middlewares/authorization";
 import { singleUploader } from "../middlewares/upload";
@@ -28,6 +29,8 @@ siswaRouter.post("/", createNewSiswa);
 siswaRouter.post("/new", registerNewSiswa);
 // Login Akun Siswa
 siswaRouter.post("/account", loginSiswa);
+// Register Akun Siswa + Course
+siswaRouter.post("/new/applicants", addNewSiswaWithCourse);
 // Edit Pwd Siswa
 siswaRouter.patch("/:nis/pwd", setPwd);
 // Edit Image Siswa

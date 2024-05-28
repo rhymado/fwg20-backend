@@ -1,3 +1,4 @@
+import { IApplicantsData } from "./applicants";
 import { IDataSiswa } from "./siswa";
 
 interface IPaginationMeta {
@@ -21,4 +22,8 @@ export interface ISiswaResponse extends IBasicResponse {
 
 export interface IAuthResponse extends IBasicResponse {
   data?: { token: string }[];
+}
+
+export interface ISiswaWithCourseResponse extends IBasicResponse {
+  data?: [IDataSiswa[], IApplicantsData[]];
 }

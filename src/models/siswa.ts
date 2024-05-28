@@ -1,3 +1,5 @@
+import { IApplicantsBody } from "./applicants";
+
 export interface ISiswaParams {
   nis: string;
 }
@@ -19,6 +21,7 @@ export interface IDataSiswa extends ISiswaBody {
   created_at?: string;
   updated_at?: string | null;
   img?: string | null;
+  id?: number;
 }
 
 export interface ISiswaRegisterBody extends ISiswaBody {
@@ -29,6 +32,8 @@ export interface ISiswaLoginBody {
   nis: string;
   pwd: string;
 }
+
+export interface ISiswaWithCourseBody extends IApplicantsBody, ISiswaRegisterBody {}
 
 // export const columnName = {
 //   siswaName: "siswa_name",

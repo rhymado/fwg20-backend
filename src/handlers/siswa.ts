@@ -12,11 +12,13 @@ import {
   getTotalSiswa,
   setImageSiswa,
 } from "../repositories/siswa";
-import { ISiswaBody, ISiswaLoginBody, ISiswaQuery, ISiswaRegisterBody } from "../models/siswa";
-import { IAuthResponse, ISiswaResponse } from "../models/response";
+import { ISiswaBody, ISiswaLoginBody, ISiswaQuery, ISiswaRegisterBody, ISiswaWithCourseBody } from "../models/siswa";
+import { IAuthResponse, ISiswaResponse, ISiswaWithCourseResponse } from "../models/response";
 import { IPayload } from "../models/payload";
 import { jwtOptions } from "../middlewares/authorization";
 import getLink from "../helpers/getLink";
+import db from "../configs/pg";
+import { registerApplicant } from "../repositories/applicants";
 
 export const getSiswa = async (req: Request<{}, {}, {}, ISiswaQuery>, res: Response<ISiswaResponse>) => {
   try {
@@ -106,7 +108,7 @@ export const registerNewSiswa = async (req: Request<{}, {}, ISiswaRegisterBody>,
     const salt = await bcrypt.genSalt();
     const hashed = await bcrypt.hash(pwd, salt);
     // menyimpan kedalam db
-    const result = await registerSiswa(req.body, hashed);
+    const result = await registerSiswa(req.body, hashed, db);
     return res.status(201).json({
       msg: "Success",
       data: result.rows,
@@ -217,6 +219,50 @@ export const setImage = async (req: Request<{ nis: string }>, res: Response<ISis
           err: "Siswa tidak ditemukan",
         });
       }
+      console.log(error.message);
+    }
+    return res.status(500).json({
+      msg: "Error",
+      err: "Internal Server Error",
+    });
+  }
+};
+
+// Create siswa + Register Course
+export const addNewSiswaWithCourse = async (
+  req: Request<{}, {}, ISiswaWithCourseBody>,
+  res: Response<ISiswaWithCourseResponse>
+) => {
+  const { courseIds, pwd } = req.body;
+
+  try {
+    // ambil client dari koneksi pool
+    const client = await db.connect();
+    try {
+      // jalankan transaksi menggunakan client tsb
+      await client.query("BEGIN");
+
+      // register siswa + register course
+      const salt = await bcrypt.genSalt();
+      const hashed = await bcrypt.hash(pwd, salt);
+      const registerResult = await registerSiswa(req.body, hashed, client);
+
+      const siswaId = registerResult.rows[0].id;
+      if (!siswaId) throw new Error("Id Siswa tidak ditemukan");
+      const applicantResult = await registerApplicant(siswaId, courseIds, client);
+      await client.query("COMMIT");
+      res.status(200).json({
+        msg: "Register Success",
+        data: [registerResult.rows, applicantResult.rows],
+      });
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    if (error instanceof Error) {
       console.log(error.message);
     }
     return res.status(500).json({
