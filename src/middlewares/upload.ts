@@ -1,5 +1,7 @@
+import { RequestHandler } from "express-serve-static-core";
 import multer, { Field, Options, diskStorage } from "multer";
 import path from "path";
+import { AppParams } from "../models/params";
 
 const multerDisk = diskStorage({
   destination: (req, file, cb) => {
@@ -30,6 +32,6 @@ const multerOptions: Options = {
 
 const uploader = multer(multerOptions);
 
-export const singleUploader = (fieldName: string) => uploader.single(fieldName);
+export const singleUploader = (fieldName: string) => uploader.single(fieldName) as RequestHandler<AppParams>;
 export const multiUploader = (fieldName: string, maxCount: number) => uploader.array(fieldName, maxCount);
 export const multiFieldUploader = (fieldConfig: Field[]) => uploader.fields(fieldConfig);
