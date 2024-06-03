@@ -2,9 +2,15 @@ import express, { Request, Response } from "express";
 import * as dotenv from "dotenv";
 import morgan from "morgan";
 import cors, { CorsOptions } from "cors";
+// import path from "path";
 
 // load env ke project
-dotenv.config();
+// console.log(process.env.NODE_ENV);
+let path = "./.env.local";
+if (process.env.NODE_ENV == "production") path = "./.env.production";
+// console.log(path);
+dotenv.config({ path });
+// console.log(process.env.PORT);
 
 import router from "./src/routes";
 import getLink from "./src/helpers/getLink";

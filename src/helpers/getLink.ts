@@ -4,7 +4,7 @@ import { ISiswaQuery } from "../models/siswa";
 
 const getLink = (req: Request<AppParams, {}, {}, QueryParams>, info?: "previous" | "next"): string => {
   const { path, hostname, query, protocol, baseUrl } = req;
-  const getNewPage = (page: string): number => {
+  const getNewPage = (page: string = "1"): number => {
     if (info === "next") return parseInt(page) + 1;
     if (info === "previous") return parseInt(page) - 1;
     return parseInt(page);

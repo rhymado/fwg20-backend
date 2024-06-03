@@ -32,8 +32,8 @@ export const getSiswa = async (req: Request<{}, {}, {}, ISiswaQuery>, res: Respo
     const dataSiswa = await getTotalSiswa(req.query);
     const page = parseInt((req.query.page as string) || "1");
     const totalData = parseInt(dataSiswa.rows[0].total_siswa);
-    const totalPage = Math.ceil(totalData / parseInt(req.query.limit as string));
-    console.log(req.baseUrl);
+    const totalPage = Math.ceil(totalData / parseInt(req.query.limit as string)) || 1;
+    // console.log(req.baseUrl);
     return res.status(200).json({
       msg: "Success",
       data: result.rows,
