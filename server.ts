@@ -6,11 +6,11 @@ import cors, { CorsOptions } from "cors";
 
 // load env ke project
 // console.log(process.env.NODE_ENV);
-let path = "./.env.production";
+// let path = "./.env.production";
 // console.log(process.env.APP_ENV == "production");
 // if (process.env.APP_ENV == "production") path = "./.env.production";
 // console.log(path);
-dotenv.config({ path });
+dotenv.config();
 
 import router from "./src/routes";
 import getLink from "./src/helpers/getLink";
