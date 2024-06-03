@@ -9,9 +9,10 @@ import {
   setPwd,
   setImage,
   addNewSiswaWithCourse,
+  setImageCloud,
 } from "../handlers/siswa";
 import { authorization } from "../middlewares/authorization";
-import { singleUploader } from "../middlewares/upload";
+import { singleCloudUploader, singleUploader } from "../middlewares/upload";
 
 const siswaRouter = Router();
 
@@ -35,5 +36,7 @@ siswaRouter.post("/new/applicants", addNewSiswaWithCourse);
 siswaRouter.patch("/:nis/pwd", setPwd);
 // Edit Image Siswa
 siswaRouter.patch("/:nis/profile", singleUploader("profile"), setImage);
+// Edit Image Siswa via Cloudinary
+siswaRouter.patch("/:nis/profile/cloud", singleCloudUploader("profile"), setImageCloud);
 
 export default siswaRouter;

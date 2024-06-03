@@ -7,14 +7,16 @@
     "build": "tsc --build",
     "start": "node ./dist/index.js",
     "dev:local": "nodemon --files index.ts",
-    "dev:prod": "set NODE_ENV=production && nodemon --files index.ts"
+    "dev:prod": "set APP_ENV=production && nodemon --files index.ts"
   },
   "keywords": [],
   "author": "Fazztrack",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
+    "datauri": "^4.1.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",

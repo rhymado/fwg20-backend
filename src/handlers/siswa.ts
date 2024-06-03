@@ -19,6 +19,7 @@ import { jwtOptions } from "../middlewares/authorization";
 import getLink from "../helpers/getLink";
 import db from "../configs/pg";
 import { registerApplicant } from "../repositories/applicants";
+import { cloudinaryUploader } from "../helpers/cloudinary";
 
 export const getSiswa = async (req: Request<{}, {}, {}, ISiswaQuery>, res: Response<ISiswaResponse>) => {
   try {
@@ -263,6 +264,39 @@ export const addNewSiswaWithCourse = async (
     }
   } catch (error) {
     if (error instanceof Error) {
+      console.log(error.message);
+    }
+    return res.status(500).json({
+      msg: "Error",
+      err: "Internal Server Error",
+    });
+  }
+};
+
+// Tambah/Edit gambar siswa via cloudinary
+export const setImageCloud = async (req: Request<{ nis: string }>, res: Response<ISiswaResponse>) => {
+  const {
+    params: { nis },
+  } = req;
+  try {
+    const { result, error } = await cloudinaryUploader(req, "siswa", nis as string);
+    if (error) throw error;
+    if (!result) throw new Error("Upload gagal");
+
+    // simpan link cloudinary ke db
+    const dbResult = await setImageSiswa(nis, result.secure_url);
+    return res.status(200).json({
+      msg: "Gambar berhasil ditambahkan",
+      data: dbResult.rows,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      if (/(invalid(.)+uuid(.)+)/g.test(error.message)) {
+        return res.status(401).json({
+          msg: "Error",
+          err: "Siswa tidak ditemukan",
+        });
+      }
       console.log(error.message);
     }
     return res.status(500).json({
