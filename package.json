@@ -2,12 +2,15 @@
   "name": "fwg20-backend",
   "version": "1.0.0",
   "description": "Backend for FWG 20",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
-    "build": "tsc --build",
+    "build": "npm run clean && tsc --build && cp -r ./node_modules ./dist/node_modules",
     "start": "node ./dist/index.js",
-    "dev:local": "nodemon --files index.ts",
-    "dev:prod": "set APP_ENV=production && nodemon --files index.ts"
+    "dev": "nodemon --files index.ts",
+    "clean": "rimraf ./dist"
   },
   "keywords": [],
   "author": "Fazztrack",
