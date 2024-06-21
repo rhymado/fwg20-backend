@@ -29,7 +29,7 @@ app.use(logger);
 const configs: CorsOptions = {
   origin: ["http://localhost:8080", "http://127.0.0.1:5500"],
   methods: ["POST", "PATCH"],
-  allowedHeaders: ["Authorization", "x-headers"],
+  allowedHeaders: ["Authorization", "x-headers", "content-type"],
 };
 app.use(cors(configs));
 
